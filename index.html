@@ -10,7 +10,7 @@
     <style>
  /* 讓圖片不要太高，留空間給按鈕 */
 img {
-  max-width: 80%;
+  max-width: 75%;
   height: auto;
   max-height: 50vh;      /* 佔螢幕最高 55% */
   object-fit: contain;   /* 保持比例顯示完整 */
@@ -44,7 +44,7 @@ img {
 <script>
 const QUESTIONS = [
     { img: "q1.jpg", options: ["是", "否"], correct: "否" },
-    { img: "q2.jpg", options: ["A：眼睛數量",B："觸角、翅膀",C："螯肢、體型、腹棘數、頭胸甲前緣"], correct: "C：螯肢、體型、腹棘數、頭胸甲前緣" },
+    { img: "q2.jpg", options: ["A：眼睛數量",B："觸角、翅膀",C："螯肢、腹棘數、頭胸甲前緣"], correct: "C：螯肢、腹棘數、頭胸甲前緣" },
     { img: "q3.jpg", options: ["A：8/8", "B：6/8", "C：8/18"], correct: "B：6/8" },
     { img: "q4.jpg", options: ["A：10處", "B：46處", "C：71處"], correct: "C：71處" },
     { img: "q5.jpg", options: ["A：1種", "B：5種", "C：9種"], correct: "B：5種" },
@@ -110,6 +110,7 @@ loadQuestion();
 </body>
 
 </html>
+
 
 
 
