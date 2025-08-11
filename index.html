@@ -7,22 +7,14 @@
 <style>
     body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
     #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
-    img { max-width: 100%; height: auto; margin-bottom: 20px; }
+    img { max-width: 100%; height: auto; max-height: 60vh; margin-bottom: 20px; }
 .opts button {
-    font-size: min(10vw, 40px); /* 手機螢幕很大，桌機最多 40px */
-    padding: 4vw 5vw;           /* 內距跟著放大 */
-    margin: 10px 0;
-    width: 100%;
+    font-size: 32px); 
+    padding: 30px 40px;
+    margin: 20px 0;
+    width: 90%;
     box-sizing: border-box;
     cursor: pointer;
-}
-
-/* 手機加倍放大 */
-@media (max-width: 768px) {
-  .opts button {
-    font-size: 28px;       /* 手機字體更大 */
-    padding: 28px 30px;    /* 手機按鈕更大 */
-  }
 }
     .correct { background-color: #c8f7c5; }
     .wrong { background-color: #f7c5c5; }
@@ -102,6 +94,7 @@ loadQuestion();
 </body>
 
 </html>
+
 
 
 
