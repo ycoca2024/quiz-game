@@ -8,18 +8,28 @@
     body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
     #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
     <style>
-  /* 圖片別佔太高，留空間給按鈕 */
-  img { max-width: 100%; height: auto; max-height: 55vh; }
+ /* 讓圖片不要太高，留空間給按鈕 */
+img {
+  max-width: 100%;
+  height: auto;
+  max-height: 55vh;      /* 佔螢幕最高 55% */
+  object-fit: contain;   /* 保持比例顯示完整 */
+}
 
-  /* 超大按鈕（強制覆蓋） */
-  .opts button {
-    font-size: min(10vw, 42px) !important;   /* 手機依螢幕放大，桌機上限 42px */
-    padding: 28px 32px !important;           /* 讓按鈕更高更厚實 */
-    width: 92% !important;                   /* 幾乎滿版 */
-    margin: 16px auto !important;            /* 上下間距 */
-    border-radius: 14px !important;
-    -webkit-appearance: none; appearance: none; /* 移除 iOS 預設膠囊樣式 */
-  }
+/* 超大按鈕（手機也很大） */
+.opts button {
+  font-size: min(10vw, 42px);
+  padding: 28px 32px;
+  width: 92%;
+  margin: 16px auto;
+  border-radius: 14px;
+  -webkit-appearance: none; appearance: none; /* 移除 iOS 膠囊樣式 */
+}
+
+/* 手機更保守地再壓一下圖片高度，避免被遮住 */
+@media (max-width: 768px) {
+  img { max-height: 48vh; }
+}
 </style>
 </head>
 <body>
@@ -100,6 +110,7 @@ loadQuestion();
 </body>
 
 </html>
+
 
 
 
