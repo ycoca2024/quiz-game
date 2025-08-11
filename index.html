@@ -8,14 +8,13 @@
     body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
     #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
     img { max-width: 100%; height: auto; margin-bottom: 20px; }
-    /* 讓選項按鈕在所有裝置上都更大 */
 .opts button {
-  font-size: 24px;        /* 基本字體放大 */
-  padding: 20px 24px;     /* 內距放大，讓按鈕變高變寬 */
-  margin: 10px 0;         /* 選項間距 */
-  width: 100%;
-  box-sizing: border-box;
-  cursor: pointer;
+    font-size: min(10vw, 40px); /* 手機螢幕很大，桌機最多 40px */
+    padding: 4vw 5vw;           /* 內距跟著放大 */
+    margin: 10px 0;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
 }
 
 /* 手機加倍放大 */
@@ -103,5 +102,6 @@ loadQuestion();
 </body>
 
 </html>
+
 
 
