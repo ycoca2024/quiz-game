@@ -7,19 +7,19 @@
 <style>
     body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
     #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
-    img { max-width: 100%; height: auto; max-height: 60vh; margin-bottom: 20px; }
-.opts button {
-    font-size: 32px); 
-    padding: 30px 40px;
-    margin: 20px 0;
-    width: 90%;
-    box-sizing: border-box;
-    cursor: pointer;
-}
-    .correct { background-color: #c8f7c5; }
-    .wrong { background-color: #f7c5c5; }
-    .mark { font-size: 24px; margin-left: 10px; }
-    #next-btn { margin-top: 20px; padding: 10px 20px; font-size: 18px; }
+    <style>
+  /* 圖片別佔太高，留空間給按鈕 */
+  img { max-width: 100%; height: auto; max-height: 55vh; }
+
+  /* 超大按鈕（強制覆蓋） */
+  .opts button {
+    font-size: min(10vw, 42px) !important;   /* 手機依螢幕放大，桌機上限 42px */
+    padding: 28px 32px !important;           /* 讓按鈕更高更厚實 */
+    width: 92% !important;                   /* 幾乎滿版 */
+    margin: 16px auto !important;            /* 上下間距 */
+    border-radius: 14px !important;
+    -webkit-appearance: none; appearance: none; /* 移除 iOS 預設膠囊樣式 */
+  }
 </style>
 </head>
 <body>
@@ -57,11 +57,17 @@ function loadQuestion() {
     questionImage.src = q.img;
     optionsDiv.innerHTML = "";
     q.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.onclick = () => onChoose(btn, opt === q.correct);
-        optionsDiv.appendChild(btn);
-    });
+  const btn = document.createElement("button");
+  btn.textContent = opt;
+
+  // 保證變大（就算快取到舊 CSS 也會生效）
+  btn.style.fontSize = "40px";
+  btn.style.padding   = "28px 32px";
+  btn.style.width     = "92%";
+
+  btn.onclick = () => onChoose(btn, opt === q.correct);
+  optionsDiv.appendChild(btn);
+});
     nextBtn.disabled = true;
 }
 
@@ -94,6 +100,7 @@ loadQuestion();
 </body>
 
 </html>
+
 
 
 
