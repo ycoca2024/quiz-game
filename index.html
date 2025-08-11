@@ -32,6 +32,13 @@
   .opts button.wrong   { background:#ffdede; }
 
   @media (max-width: 768px) { img { max-height: 42vh; } }
+
+  button:disabled {
+  font-size: min(8vw, 36px);  /* 跟正常按鈕一樣大 */
+  padding: 20px 24px;         /* 保持高度 */
+  opacity: 0.5;               /* 保留淡色效果表示不可用 */
+  cursor: not-allowed;        /* 滑鼠指標顯示禁止 */
+}
 </style>
 </head>
 <body>
@@ -108,6 +115,7 @@ loadQuestion();
 
 </body>
 </html>
+
 
 
 
