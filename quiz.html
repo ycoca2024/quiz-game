@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>互動問答遊戲</title>
+<style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
+    #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
+    img { max-width: 100%; height: auto; margin-bottom: 20px; }
+    .options button { display: block; width: 80%; margin: 10px auto; padding: 10px; font-size: 18px; }
+    .correct { background-color: #c8f7c5; }
+    .wrong { background-color: #f7c5c5; }
+    .mark { font-size: 24px; margin-left: 10px; }
+    #next-btn { margin-top: 20px; padding: 10px 20px; font-size: 18px; }
+</style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <h2 id="question-title"></h2>
+    <img id="question-image" src="" alt="題目圖片">
+    <div class="options" id="options"></div>
+    <button id="next-btn">下一題</button>
+</div>
+
+<script>
+const QUESTIONS = [
+    { img: "q1.jpg", options: ["是", "否"], correct: "否" },
+    { img: "q2.jpg", options: ["眼睛數量","觸角、翅膀","螯肢、體型、腹棘數、頭胸甲前緣"], correct: "螯肢、體型、腹棘數、頭胸甲前緣" },
+    { img: "q3.jpg", options: ["A：8/8", "B：6/8", "C：8/18"], correct: "B：6/8" },
+    { img: "q4.jpg", options: ["A：10處", "B：46處", "C：71處"], correct: "C：71處" },
+    { img: "q5.jpg", options: ["A：1種", "B：5種", "C：9種"], correct: "B：5種" },
+    { img: "q6.jpg", options: ["A：鯨魚 ", "B：鯊魚", "C：都不是"], correct: "B：鯊魚" },
+    { img: "q7.jpg", options: ["A：塑膠", "B：化學物質", "C：以上皆是"], correct: "C：以上皆是" }
+];
+
+let currentIndex = 0;
+let locked = false;
+
+const questionTitle = document.getElementById("question-title");
+const questionImage = document.getElementById("question-image");
+const optionsDiv = document.getElementById("options");
+const nextBtn = document.getElementById("next-btn");
+
+function loadQuestion() {
+    locked = false;
+    const q = QUESTIONS[currentIndex];
+    questionTitle.textContent = `第 ${currentIndex + 1} 題`;
+    questionImage.src = q.img;
+    optionsDiv.innerHTML = "";
+    q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => onChoose(btn, opt === q.correct);
+        optionsDiv.appendChild(btn);
+    });
+    nextBtn.disabled = true;
+}
+
+function onChoose(btn, isCorrect) {
+    if (locked) return;
+    locked = true;
+    if (isCorrect) {
+        btn.classList.add("correct");
+        btn.textContent += " ⭕";
+    } else {
+        btn.classList.add("wrong");
+        btn.textContent += " ❌";
+    }
+    [...optionsDiv.children].forEach(b => b.disabled = true);
+    nextBtn.disabled = false;
+}
+
+nextBtn.onclick = () => {
+    currentIndex++;
+    if (currentIndex < QUESTIONS.length) {
+        loadQuestion();
+    } else {
+        alert("已完成所有題目！");
+    }
+};
+
+loadQuestion();
+</script>
+
+</body>
+</html>
