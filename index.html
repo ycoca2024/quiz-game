@@ -1,54 +1,60 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>互動問答遊戲</title>
 <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
-    #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
- /* 讓圖片不要太高，留空間給按鈕 */
-img {
-  max-width: 75%;
-  height: auto;
-  max-height: 50vh;      /* 佔螢幕最高 55% */
-  object-fit: contain;   /* 保持比例顯示完整 */
-}
+  body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
+  #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
 
-/* 超大按鈕（手機也很大） */
-.opts button {
-  font-size: min(10vw, 42px);
-  padding: 28px 32px;
-  width: 92%;
-  margin: 16px auto;
-  border-radius: 14px;
-  -webkit-appearance: none; appearance: none; /* 移除 iOS 膠囊樣式 */
-}
+  /* 圖片別太高，留空間給按鈕 */
+  img {
+    max-width: 75%;
+    height: auto;
+    max-height: 50vh;
+    object-fit: contain;
+  }
 
-/* 手機更保守地再壓一下圖片高度，避免被遮住 */
-@media (max-width: 768px) {
-  img { max-height: 42vh; }
-}
+  /* 超大按鈕（手機也很大） */
+  .opts button {
+    font-size: min(10vw, 42px);
+    padding: 28px 32px;
+    width: 92%;
+    margin: 16px auto;
+    border-radius: 14px;
+    -webkit-appearance: none; appearance: none;
+    border: 1px solid #ddd;
+    background: #f8f8f8;
+  }
+  .opts button.correct { background:#dff6de; }
+  .opts button.wrong   { background:#ffdede; }
+
+  @media (max-width: 768px) { img { max-height: 42vh; } }
 </style>
 </head>
 <body>
 
 <div id="quiz-container">
-    <h2 id="question-title"></h2>
-    <img id="question-image" src="" alt="題目圖片">
-    <div class="opts" id="opts"></div>
-    <button id="next-btn">下一題</button>
+  <h2 id="question-title"></h2>
+  <img id="question-image" src="" alt="題目圖片" />
+  <div class="opts" id="opts"></div>
+  <button id="next-btn">下一題</button>
 </div>
 
 <script>
 const QUESTIONS = [
-    { img: "q1.jpg", opts: ["是", "否"], correct: "否" },
-    { img: "q2.jpg", opts: ["A："眼睛數量",B："觸角、翅膀",C："螯肢、腹棘數、頭胸甲前緣"], correct: "C："螯肢、腹棘數、頭胸甲前緣" },
-    { img: "q3.jpg", opts: ["A：8/8", "B：6/8", "C：8/18"], correct: "B：6/8" },
-    { img: "q4.jpg", opts: ["A：10處", "B：46處", "C：71處"], correct: "C：71處" },
-    { img: "q5.jpg", opts: ["A：1種", "B：5種", "C：9種"], correct: "B：5種" },
-    { img: "q6.jpg", opts: ["A：鯨魚 ", "B：鯊魚", "C："都不是"], correct: "B：鯊魚" },
-    { img: "q7.jpg", opts: ["A：塑膠", "B：化學物質", "C："以上皆是"], correct: "C：以上皆是" }
+  { img: "q1.jpg", opts: ["是", "否"], correct: "否" },
+  { img: "q2.jpg", opts: [
+      "A：眼睛數量",
+      "B：觸角、翅膀",
+      "C：螯肢、腹棘數、頭胸甲前緣"
+    ], correct: "C：螯肢、腹棘數、頭胸甲前緣" },
+  { img: "q3.jpg", opts: ["A：8/8", "B：6/8", "C：8/18"], correct: "B：6/8" },
+  { img: "q4.jpg", opts: ["A：10處", "B：46處", "C：71處"], correct: "C：71處" },
+  { img: "q5.jpg", opts: ["A：1種", "B：5種", "C：9種"], correct: "B：5種" },
+  { img: "q6.jpg", opts: ["A：鯨魚", "B：鯊魚", "C：都不是"], correct: "B：鯊魚" },
+  { img: "q7.jpg", opts: ["A：塑膠", "B：化學物質", "C：以上皆是"], correct: "C：以上皆是" }
 ];
 
 let currentIndex = 0;
@@ -60,54 +66,46 @@ const optsDiv = document.getElementById("opts");
 const nextBtn = document.getElementById("next-btn");
 
 function loadQuestion() {
-    locked = false;
-    const q = QUESTIONS[currentIndex];
-    questionTitle.textContent = `第 ${currentIndex + 1} 題`;
-    questionImage.src = q.img;
-    optsDiv.innerHTML = "";
-    q.opts.forEach(opt => {
-  const btn = document.createElement("button");
-  btn.textContent = opt;
+  locked = false;
+  const q = QUESTIONS[currentIndex];
+  questionTitle.textContent = `第 ${currentIndex + 1} 題`;
+  questionImage.src = q.img;
 
-  // 保證變大（就算快取到舊 CSS 也會生效）
-  btn.style.fontSize = "40px";
-  btn.style.padding   = "28px 32px";
-  btn.style.width     = "92%";
+  optsDiv.innerHTML = "";
+  q.opts.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
 
-  btn.onclick = () => onChoose(btn, opt === q.correct);
-  optsDiv.appendChild(btn);
-});
-    nextBtn.disabled = true;
+    // 再保證放大
+    btn.style.fontSize = "40px";
+    btn.style.padding   = "28px 32px";
+    btn.style.width     = "92%";
+
+    btn.onclick = () => onChoose(btn, opt === q.correct);
+    optsDiv.appendChild(btn);
+  });
+  nextBtn.disabled = true;
 }
 
 function onChoose(btn, isCorrect) {
-    if (locked) return;
-    locked = true;
-    if (isCorrect) {
-        btn.classList.add("correct");
-        btn.textContent += " ⭕";
-    } else {
-        btn.classList.add("wrong");
-        btn.textContent += " ❌";
-    }
-    [...optsDiv.children].forEach(b => b.disabled = true);
-    nextBtn.disabled = false;
+  if (locked) return;
+  locked = true;
+  if (isCorrect) { btn.classList.add("correct"); btn.textContent += " ⭕"; }
+  else           { btn.classList.add("wrong");   btn.textContent += " ❌"; }
+  [...optsDiv.children].forEach(b => b.disabled = true);
+  nextBtn.disabled = false;
 }
 
 nextBtn.onclick = () => {
-    currentIndex++;
-    if (currentIndex < QUESTIONS.length) {
-        loadQuestion();
-    } else {
-        alert("已完成所有題目！");
-    }
+  currentIndex++;
+  if (currentIndex < QUESTIONS.length) loadQuestion();
+  else alert("已完成所有題目！");
 };
 
 loadQuestion();
 </script>
 
 </body>
-
 </html>
 
 
