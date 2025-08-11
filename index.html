@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
 <title>互動問答遊戲</title>
 <style>
     body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
     #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
     img { max-width: 100%; height: auto; margin-bottom: 20px; }
-    .options button  {
-  font-size: 20px;        /* 文字變大 */
-  padding: 15px 20px;     /* 增加內距讓按鈕變高變寬 */
-  margin: 8px 0;          /* 增加選項之間的間距 */
-  width: 100%;            /* 在小螢幕上撐滿寬度 */
-  box-sizing: border-box; /* 避免寬度計算錯亂 */
+    /* 讓選項按鈕在所有裝置上都更大 */
+.opts button {
+  font-size: 24px;        /* 基本字體放大 */
+  padding: 20px 24px;     /* 內距放大，讓按鈕變高變寬 */
+  margin: 10px 0;         /* 選項間距 */
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
 }
 
-/* 針對手機或小螢幕進一步優化 */
-@media (max-width: 600px) {
+/* 手機加倍放大 */
+@media (max-width: 768px) {
   .opts button {
-    font-size: 22px;
-    padding: 18px 22px;
+    font-size: 28px;       /* 手機字體更大 */
+    padding: 28px 30px;    /* 手機按鈕更大 */
   }
 }
     .correct { background-color: #c8f7c5; }
@@ -100,4 +103,5 @@ loadQuestion();
 </body>
 
 </html>
+
 
