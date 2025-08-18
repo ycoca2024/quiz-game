@@ -1,307 +1,94 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>海龜華容道｜拼圖切片版（2×2 / 4×4）</title>
+<meta charset="UTF-8">
+<title>互動問答遊戲</title>
 <style>
-  :root { --gap: 6px; --tile: 88px; }
-  body{margin:0;background:#0e2a3b;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Arial}
-  header{padding:14px 16px;text-align:center}
-  h1{margin:0;font-size:20px}
-  .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0 6px}
-  button{
-    border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:600;
-    background:#16a085;color:#fff
-  }
-  button.secondary{background:#34495e}
-  button:disabled{opacity:.6;cursor:default}
-  .panel{max-width:520px;margin:0 auto 14px;display:grid;gap:8px;padding:0 14px}
-  .stats{
-    display:grid;gap:6px;background:#113549;border:1px solid #1f5979;border-radius:12px;padding:10px 12px
-  }
-  .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
-  .label{opacity:.9}
-  .value{font-weight:700}
-  .board-wrap{display:flex;justify-content:center;margin:4px 0 24px}
-  .grid{
-    display:grid;gap:var(--gap);background:#133c52;padding:var(--gap);
-    border-radius:12px;border:1px solid #1f5979;touch-action:manipulation;
-  }
-  .tile{
-    position:relative;
-    width:var(--tile);height:var(--tile);
-    display:flex;align-items:center;justify-content:center;
-    background:#1abc9c;color:#fff;border-radius:10px;user-select:none;cursor:pointer;
-    transition:transform .08s ease, box-shadow .08s ease;
-    box-shadow:0 2px 0 rgba(0,0,0,.3);
-    overflow:hidden;
-  }
-  .tile:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.3)}
-  .tile .num{
-    position:absolute;right:6px;bottom:6px;
-    font-size:14px;font-weight:900;
-    background:rgba(0,0,0,.45);padding:2px 6px;border-radius:6px;
-  }
-  .hide-numbers .tile .num{ display:none; }
-  .empty{background:#0e2a3b;border:2px dashed #1f5979;box-shadow:none;cursor:default}
-  footer{opacity:.8;text-align:center;margin:18px 0 40px;font-size:12px}
-  @media (max-width:420px){
-    :root{ --tile: 72px; --gap: 5px;}
-  }
+    body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 0; }
+    #quiz-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
+    img { max-width: 100%; height: auto; margin-bottom: 20px; }
+    .options button {font-size: 20px;        /* 文字變大 */
+  padding: 15px 20px;     /* 增加內距讓按鈕變高變寬 */
+  margin: 8px 0;          /* 增加選項之間的間距 */
+  width: 100%;            /* 在小螢幕上撐滿寬度 */
+  box-sizing: border-box; /* 避免寬度計算錯亂 */}
+/* 針對手機或小螢幕進一步優化 */
+@media (max-width: 600px) {
+  .opts button {font-size: 22px;padding: 18px 22px;}}
+    .correct { background-color: #c8f7c5; }
+    .wrong { background-color: #f7c5c5; }
+    .mark { font-size: 24px; margin-left: 10px; }
+    #next-btn { margin-top: 20px; padding: 10px 20px; font-size: 18px; }
 </style>
 </head>
 <body>
-<header>
-  <h1>🐢 海龜華容道（切片拼圖版）</h1>
-  <div class="controls">
-    <button id="btn2" onclick="startGame(2)">2×2 簡易版</button>
-    <button id="btn4" onclick="startGame(4)">4×4 進階版</button>
-    <button class="secondary" onclick="reshuffle()">重排 / 新局</button>
-    <button class="secondary" id="btnToggleNum" onclick="toggleNumbers()">隱藏編號</button>
-  </div>
-</header>
 
-<section class="panel">
-  <div class="stats">
-    <div class="row"><span class="label">目前盤面：</span><span class="value" id="labelSize">4×4</span></div>
-    <div class="row"><span class="label">步數：</span><span class="value" id="currMoves">0</span></div>
-    <div class="row"><span class="label">時間：</span><span class="value" id="currTime">00:00.0</span></div>
-    <hr style="border:none;border-top:1px solid #1f5979;opacity:.7">
-    <div class="row"><span class="label">歷史最佳步數：</span><span class="value" id="bestMoves">—</span></div>
-    <div class="row"><span class="label">歷史最佳時間：</span><span class="value" id="bestTime">—</span></div>
-  </div>
-</section>
-
-<div class="board-wrap">
-  <div id="grid" class="grid" aria-label="滑塊拼圖棋盤"></div>
+<div id="quiz-container">
+    <h2 id="question-title"></h2>
+    <img id="question-image" src="" alt="題目圖片">
+    <div class="options" id="options"></div>
+    <button id="next-btn">下一題</button>
 </div>
 
-<audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
-
-<footer>提示：將程式中的 <code>IMG_URL</code> 改成你的海龜圖片路徑（建議正方形圖）。記錄儲存在本機瀏覽器（依尺寸）。</footer>
-
 <script>
-/* ---------- 設定：換成你的圖片路徑 ---------- */
-const IMG_URL = "your-turtle-image.jpg"; // ←← 把這裡換掉
+const QUESTIONS = [
+    { img: "q1.jpg", options: ["是", "否"], correct: "否" },
+    { img: "q2.jpg", options: ["眼睛數量","觸角、翅膀","螯肢、體型、腹棘數、頭胸甲前緣"], correct: "螯肢、體型、腹棘數、頭胸甲前緣" },
+    { img: "q3.jpg", options: ["A：8/8", "B：6/8", "C：8/18"], correct: "B：6/8" },
+    { img: "q4.jpg", options: ["A：10處", "B：46處", "C：71處"], correct: "C：71處" },
+    { img: "q5.jpg", options: ["A：1種", "B：5種", "C：9種"], correct: "B：5種" },
+    { img: "q6.jpg", options: ["A：鯨魚 ", "B：鯊魚", "C：都不是"], correct: "B：鯊魚" },
+    { img: "q7.jpg", options: ["A：塑膠", "B：化學物質", "C：以上皆是"], correct: "C：以上皆是" }
+];
 
-/* ---------- 狀態變數 ---------- */
-let size = 4;
-let tiles = [];            // 1..n^2-1 與 null
-let moves = 0;
-let timerId = null;
-let startAt = null;
-let elapsedMs = 0;
-let showNumbers = true;
-const LS_KEY = "turtle_huarongdao_sprite_records_v1";
-let records = loadRecords();
+let currentIndex = 0;
+let locked = false;
 
-function loadRecords(){
-  try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
-  catch(e){ return {}; }
-}
-function saveRecords(){
-  localStorage.setItem(LS_KEY, JSON.stringify(records));
-}
+const questionTitle = document.getElementById("question-title");
+const questionImage = document.getElementById("question-image");
+const optionsDiv = document.getElementById("options");
+const nextBtn = document.getElementById("next-btn");
 
-/* ---------- UI 節點 ---------- */
-const gridEl = document.getElementById('grid');
-const currMovesEl = document.getElementById('currMoves');
-const currTimeEl  = document.getElementById('currTime');
-const labelSizeEl = document.getElementById('labelSize');
-const bestMovesEl = document.getElementById('bestMoves');
-const bestTimeEl  = document.getElementById('bestTime');
-const winSound    = document.getElementById('winSound');
-const btnToggleNum= document.getElementById('btnToggleNum');
-
-/* ---------- 工具 ---------- */
-function formatMs(ms){
-  if(ms == null) return "—";
-  const m = Math.floor(ms/60000);
-  const s = Math.floor((ms%60000)/1000);
-  const ds= Math.floor((ms%1000)/100);
-  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${ds}`;
-}
-function updateStats(){
-  currMovesEl.textContent = moves;
-  currTimeEl.textContent  = formatMs(elapsedMs);
-  labelSizeEl.textContent = `${size}×${size}`;
-  const r = records[size] || {};
-  bestMovesEl.textContent = (r.bestMoves != null) ? ${r.bestMoves} 步 : "—";
-  bestTimeEl.textContent  = (r.bestTimeMs != null) ? formatMs(r.bestTimeMs) : "—";
+function loadQuestion() {
+    locked = false;
+    const q = QUESTIONS[currentIndex];
+    questionTitle.textContent = `第 ${currentIndex + 1} 題`;
+    questionImage.src = q.img;
+    optionsDiv.innerHTML = "";
+    q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => onChoose(btn, opt === q.correct);
+        optionsDiv.appendChild(btn);
+    });
+    nextBtn.disabled = true;
 }
 
-/* ---------- 計時器 ---------- */
-function startTimer(){
-  stopTimer();
-  startAt = Date.now();
-  timerId = setInterval(()=>{
-    elapsedMs = Date.now() - startAt;
-    currTimeEl.textContent = formatMs(elapsedMs);
-  }, 100);
-}
-function stopTimer(){
-  if(timerId){ clearInterval(timerId); timerId = null; }
-}
-
-/* ---------- 盤面生成與可解性 ---------- */
-function generateSolved(size){
-  const arr = [];
-  for(let i=1;i<size*size;i++) arr.push(i);
-  arr.push(null);
-  return arr;
-}
-function inversions(array){
-  const flat = array.filter(x => x !== null);
-  let inv = 0;
-  for(let i=0;i<flat.length;i++){
-    for(let j=i+1;j<flat.length;j++){
-      if(flat[i] > flat[j]) inv++;
+function onChoose(btn, isCorrect) {
+    if (locked) return;
+    locked = true;
+    if (isCorrect) {
+        btn.classList.add("correct");
+        btn.textContent += " ⭕";
+    } else {
+        btn.classList.add("wrong");
+        btn.textContent += " ❌";
     }
-  }
-  return inv;
+    [...optionsDiv.children].forEach(b => b.disabled = true);
+    nextBtn.disabled = false;
 }
-// 可解條件（15-puzzle 規則）
-function isSolvable(arr, size){
-  const inv = inversions(arr);
-  if(size % 2 === 1){
-    return inv % 2 === 0;
-  }else{
-    const emptyIdx = arr.indexOf(null);
-    const emptyRowFromTop = Math.floor(emptyIdx / size);
-    const emptyRowFromBottom = size - emptyRowFromTop; // 1..size
-    return (inv % 2) !== (emptyRowFromBottom % 2);
-  }
-}
-function shuffleSolvable(size){
-  const base = generateSolved(size);
-  let arr = base.slice();
-  do{
-    for(let i=arr.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+
+nextBtn.onclick = () => {
+    currentIndex++;
+    if (currentIndex < QUESTIONS.length) {
+        loadQuestion();
+    } else {
+        alert("已完成所有題目！");
     }
-  } while (!isSolvable(arr, size) || isSolved(arr));
-  return arr;
-}
-function isSolved(arr=tiles){
-  for(let i=0;i<size*size-1;i++){
-    if(arr[i] !== i+1) return false;
-  }
-  return arr[arr.length-1] === null;
-}
+};
 
-/* ---------- 背景切片定位 ---------- */
-// 將第 v 塊（1..n^2-1）對應到原圖中的 (col,row)
-function calcBackgroundForValue(v, size, tilePx){
-  const col = (v-1) % size;
-  const row = Math.floor((v-1) / size);
-  const posX = -(col * tilePx);
-  const posY = -(row * tilePx);
-  return { posX, posY };
-}
+loadQuestion();
+</script>
 
-/* ---------- 繪製 ---------- */
-function drawGrid(){
-  const tilePx = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tile')) || 88;
-  gridEl.style.gridTemplateColumns = `repeat(${size}, var(--tile))`;
-  gridEl.style.gridTemplateRows    = `repeat(${size}, var(--tile))`;
-  gridEl.classList.toggle('hide-numbers', !showNumbers);
-  gridEl.innerHTML = '';
-
-  tiles.forEach((val, idx)=>{
-    const div = document.createElement('div');
-    const isEmpty = (val === null);
-    div.className = 'tile' + (isEmpty ? ' empty' : '');
-    if(!isEmpty){
-      // 背景圖切片
-      const { posX, posY } = calcBackgroundForValue(val, size, tilePx);
-      div.style.backgroundImage = `url("${IMG_URL}")`;
-      div.style.backgroundSize  = `${size*tilePx}px ${size*tilePx}px`;
-      div.style.backgroundPosition = `${posX}px ${posY}px`;
-      // 編號角標（可切換顯示/隱藏）
-      const num = document.createElement('span');
-      num.className = 'num';
-      num.textContent = val;
-      div.appendChild(num);
-
-      div.setAttribute('role','button');
-      div.setAttribute('aria-label',`移動第 ${val} 塊`);
-      div.addEventListener('click', ()=>tryMove(idx));
-    }else{
-      // 空格用背景顏色表示
-      div.setAttribute('aria-label','空格');
-    }
-    gridEl.appendChild(div);
-  });
-}
-
-/* ---------- 移動 ---------- */
-function tryMove(idx){
-  const emptyIdx = tiles.indexOf(null);
-  const ex = emptyIdx % size, ey = Math.floor(emptyIdx/size);
-  const x  = idx % size,     y  = Math.floor(idx/size);
-  if(Math.abs(ex-x)+Math.abs(ey-y) === 1){
-    [tiles[emptyIdx], tiles[idx]] = [tiles[idx], tiles[emptyIdx]];
-    moves++;
-    drawGrid();
-    currMovesEl.textContent = moves;
-    checkWin();
-  }
-}
-
-/* ---------- 破關 ---------- */
-function checkWin(){
-  if(!isSolved()) return;
-  stopTimer();
-  winSound.currentTime = 0;
-  winSound.play().catch(()=>{});
-  const usedMs = elapsedMs;
-
-  const r = records[size] || {};
-  let broke = false;
-  if(r.bestMoves == null || moves < r.bestMoves){ r.bestMoves = moves; broke = true; }
-  if(r.bestTimeMs == null || usedMs < r.bestTimeMs){ r.bestTimeMs = usedMs; broke = true; }
-  records[size] = r; saveRecords(); updateStats();
-
-  const msg = [
-    `✅ 破關成功！`,
-    `步數：${moves} 步`,
-    `時間：${formatMs(usedMs)}`,
-    (broke ? '🎉 恭喜刷新歷史最佳！' : '')
-  ].filter(Boolean).join('\n');
-  alert(msg);
-}
-
-/* ---------- 控制 ---------- */
-function startGame(n){
-  size = n;
-  tiles = shuffleSolvable(size);
-  moves = 0;
-  elapsedMs = 0;
-  updateStats();
-  drawGrid();
-  startTimer();
-  document.getElementById('btn2').disabled = (size===2);
-  document.getElementById('btn4').disabled = (size===4);
-}
-function reshuffle(){
-  tiles = shuffleSolvable(size);
-  moves = 0;
-  elapsedMs = 0;
-  updateStats();
-  drawGrid();
-  startTimer();
-}
-function toggleNumbers(){
-  showNumbers = !showNumbers;
-  btnToggleNum.textContent = showNumbers ? '隱藏編號' : '顯示編號';
-  drawGrid();
-}
-
-/* ---------- 鍵盤方向鍵 ---------- */
-document.addEventListener('keydown', (e)=>{
-  const key = e.key;
-  const emptyIdx = tiles.indexOf(null);
-  const ex = emptyIdx % size, ey = Math.floor(emptyIdx/size);
-  le
+</body>
+</html>
